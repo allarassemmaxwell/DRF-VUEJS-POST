@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <div id="homeapp">
+        <h1>Welcome</h1>
+        <div v-for="item in APIData">
+            <h1>[[item.title]]</h1>
+            <p>[[item.content]]</p>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+
+{% block javascript %}
+    <script>
+        var homeVue = new Vue({
+            el: '#homeapp',
+            delimiters: ['[[', ']]'],
+            data () {
+                return {
+                    APIData: []
+                }
+            },
+            computed: {
+                    
+            },
+            mounted() {
+                console.log('Mounted');
+            },
+            created() {
+                this.get_posts();
+            },
+            methods: {
+                async get_posts() {
+                    try {
+                        const response = await axios.get('/posts/');
+                        this.APIData = response.data
+                        console.log("GET HERE:", this.APIData);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                },
+                async post_post() {
+                    try {
+                        var data = { }
+                        const response = await axios.post('/posts/', data);
+                        console.log("POST METHOD", response.data);
+                    } catch (errors) {
+                        console.error(errors);
+                    }
+                },
+                async delete(id) {
+                    try {
+                        const response = await axios.delete(`${BASE_URL}/todos/${id}`);
+                        console.log("DELETE POST", id);
+                        return response.data;
+                    } catch (errors) {
+                        console.error(errors);
+                    }
+                }
+            },
+        })
+    </script>
+{% endblock %}
